@@ -25,17 +25,16 @@ window.onDBChange = () => {
 // ================= AUTH =================
 function checkSession() {
     sync();
-    const adminSession = (() => {
-        try { return JSON.parse(localStorage.getItem('active_admin')); } catch { return null; }
-    })();
-    const admin = adminSession && getUser(adminSession.nim);
-    if (admin && admin.role === 'Admin' && admin.status === 'Aktif') {
-        window.location.replace('index.html?mode=admin');
-        return;
+    let nim = sessionStorage.getItem(SES_U);
+    if (!nim) {
+        nim = localStorage.getItem(SES_U);
+        if (nim) {
+            sessionStorage.setItem(SES_U, nim);
+            localStorage.removeItem(SES_U);
+        }
     }
-    if (adminSession) localStorage.removeItem('active_admin');
-    const nim = localStorage.getItem(SES_U); me = nim ? getUser(nim) : null;
-    if (me && (me.role === 'Admin' || ['Nonaktif', 'Blacklist'].includes(me.status))) { localStorage.removeItem(SES_U); me = null; }
+    me = nim ? getUser(nim) : null;
+    if (me && (me.role === 'Admin' || ['Nonaktif', 'Blacklist'].includes(me.status))) { sessionStorage.removeItem(SES_U); me = null; }
     $('view-login').classList.toggle('hidden', !!me);
     $('app-layout').classList.toggle('hidden', !me);
     $('reg-prodi').innerHTML = db.master['Program Studi'].map(p => `<option>${esc(p)}</option>`).join('');
@@ -66,18 +65,21 @@ function resetPasswordResetForm() {
     $('forgot-submit-button').textContent = 'Lanjutkan';
     $('auth-form-forgot').querySelector('form').reset();
 }
+function storeLoginSession(user) {
+    if (user.role === 'Admin') {
+        sessionStorage.removeItem(SES_U);
+        sessionStorage.setItem(SES_A, JSON.stringify({ name: user.name, nim: user.nim }));
+    } else {
+        sessionStorage.removeItem(SES_A);
+        sessionStorage.setItem(SES_U, user.nim);
+    }
+}
 function handleLogin(e) {
     e.preventDefault();
     const r = tryLogin($('login-email').value, $('login-password').value, 'shared');
     if (!r.ok) return showAuthAlert(r.msg, 'error');
     me = r.user;
-    if (me.role === 'Admin') {
-        localStorage.removeItem(SES_U);
-        localStorage.setItem('active_admin', JSON.stringify({ name: me.name, nim: me.nim }));
-    } else {
-        localStorage.removeItem('active_admin');
-        localStorage.setItem(SES_U, me.nim);
-    }
+    storeLoginSession(me);
     log(me.role === 'Admin' ? 'Login admin' : 'Login user');
     showAuthAlert('Login berhasil! Memuat dashboard...', 'success');
     if (me.role === 'Admin') {
@@ -146,7 +148,7 @@ function handleForgotPassword(e) {
     toggleAuthMode('login');
     showAuthAlert('Kata sandi berhasil diperbarui. Anda sekarang dapat masuk menggunakan kata sandi baru.', 'success');
 }
-function handleLogout() { if (me) log('Logout user'); localStorage.removeItem(SES_U); me = null; checkSession(); }
+function handleLogout() { if (me) log('Logout user'); sessionStorage.removeItem(SES_U); me = null; checkSession(); }
 
 // ================= UI UMUM =================
 function showToast(msg, type = 'success') {

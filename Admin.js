@@ -1,10 +1,23 @@
 // ================= HELPER & DATA =================
-const KEY = 'kompas_db_v2', LEGACY_KEY = 'kompas_admin_db', LEGACY_BACKUP_KEY = 'kompas_admin_db_backup', SES = 'active_admin';
+const KEY = 'kompas_db_v2', LEGACY_KEY = 'kompas_admin_db', LEGACY_BACKUP_KEY = 'kompas_admin_db_backup', SES = 'kompas_session_admin', LEGACY_SES = 'active_admin';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const rp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
 const localISODate = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 const todayISO = () => localISODate(new Date());
+function loadAdminSession() {
+    let stored = sessionStorage.getItem(SES);
+    if (!stored) {
+        stored = localStorage.getItem(LEGACY_SES);
+        if (stored) sessionStorage.setItem(SES, stored);
+    }
+    if (localStorage.getItem(LEGACY_SES)) localStorage.removeItem(LEGACY_SES);
+    if (!stored) return null;
+    try { return JSON.parse(stored); } catch {
+        sessionStorage.removeItem(SES);
+        return null;
+    }
+}
 const addCalendarDays = (date, days) => {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -244,16 +257,16 @@ let adminNotificationListenersReady = false;
 window.addEventListener('storage', e => {
     if (e.key !== KEY) return;
     db = load(KEY, null);
-    const active = load(SES, null);
+    const active = loadAdminSession();
     const admin = active && db?.users.find(user => user.nim === active.nim && user.role === 'Admin' && user.status === 'Aktif');
-    if (!admin) { localStorage.removeItem(SES); checkSession(); return; }
+    if (!admin) { sessionStorage.removeItem(SES); checkSession(); return; }
     render();
 });
 
 function checkSession() {
-    const a = load(SES, null);
+    const a = loadAdminSession();
     const user = a && db.users.find(x => x.nim === a.nim && x.role === 'Admin' && x.status === 'Aktif');
-    if (a && !user) localStorage.removeItem(SES);
+    if (a && !user) sessionStorage.removeItem(SES);
     if (!user) { window.location.replace('index.html'); return; }
     $('view-login').classList.toggle('hidden', !!user);
     $('app-layout').classList.toggle('hidden', !user);
@@ -267,7 +280,7 @@ function checkSession() {
     }
     go('dashboard');
 }
-function handleLogout() { log('Logout admin'); localStorage.removeItem(SES); checkSession(); }
+function handleLogout() { log('Logout admin'); sessionStorage.removeItem(SES); checkSession(); }
 
 // ================= UI UMUM =================
 function showToast(msg, type = 'success') {

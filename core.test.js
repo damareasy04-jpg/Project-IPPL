@@ -5,6 +5,10 @@ const test = require('node:test');
 const vm = require('node:vm');
 
 const coreSource = fs.readFileSync(path.join(__dirname, 'core.js'), 'utf8');
+const userSource = fs.readFileSync(path.join(__dirname, 'user.js'), 'utf8');
+const loginSessionStart = userSource.indexOf('function storeLoginSession(');
+const loginSessionEnd = userSource.indexOf('\nfunction handleLogin(', loginSessionStart);
+const loginSessionWorkflow = userSource.slice(loginSessionStart, loginSessionEnd);
 
 function createCoreContext() {
     const store = new Map();
@@ -44,6 +48,29 @@ test('shared login accepts active admin accounts and keeps role-specific admin l
 
     assert.equal(evaluate(context, `tryLogin('${nim}', 'admin123', 'shared').ok`), true);
     assert.equal(evaluate(context, `tryLogin('${nim}', 'admin123', 'user').ok`), undefined);
+});
+
+test('admin and user sessions can remain active in separate tabs', () => {
+    const makeTab = () => {
+        const values = new Map();
+        const sessionStorage = {
+            getItem(key) { return values.get(key) ?? null; },
+            setItem(key, value) { values.set(key, String(value)); },
+            removeItem(key) { values.delete(key); }
+        };
+        const context = vm.createContext({ SES_U: 'kompas_session_user', SES_A: 'kompas_session_admin', sessionStorage });
+        vm.runInContext(loginSessionWorkflow, context);
+        return { context, sessionStorage };
+    };
+    const adminTab = makeTab(), userTab = makeTab();
+
+    vm.runInContext("storeLoginSession({ role: 'Admin', name: 'Admin Uji', nim: '198001012005' })", adminTab.context);
+    vm.runInContext("storeLoginSession({ role: 'Mahasiswa', name: 'Budi Uji', nim: '198020261001' })", userTab.context);
+
+    assert.deepEqual(JSON.parse(adminTab.sessionStorage.getItem('kompas_session_admin')), { name: 'Admin Uji', nim: '198001012005' });
+    assert.equal(adminTab.sessionStorage.getItem('kompas_session_user'), null);
+    assert.equal(userTab.sessionStorage.getItem('kompas_session_user'), '198020261001');
+    assert.equal(userTab.sessionStorage.getItem('kompas_session_admin'), null);
 });
 
 test('loan validation rejects a request that exceeds available stock', () => {

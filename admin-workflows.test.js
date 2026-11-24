@@ -11,6 +11,9 @@ const issueWorkflow = adminSource.slice(start, end);
 const fineStart = adminSource.indexOf('function fineReject(');
 const fineEnd = adminSource.indexOf('// ================= LAPORAN KENDALA =================', fineStart);
 const fineRejectWorkflow = adminSource.slice(fineStart, fineEnd);
+const adminSessionStart = adminSource.indexOf('function loadAdminSession()');
+const adminSessionEnd = adminSource.indexOf('\nconst addCalendarDays', adminSessionStart);
+const adminSessionWorkflow = adminSource.slice(adminSessionStart, adminSessionEnd);
 const pendingReturnStart = adminSource.indexOf('const hasPendingReturn =');
 const pendingReturnEnd = adminSource.indexOf(';', pendingReturnStart) + 1;
 const pendingReturnWorkflow = adminSource.slice(pendingReturnStart, pendingReturnEnd);
@@ -38,6 +41,27 @@ function createContext(issue, asset) {
 function callForm(context, values) {
     context.formData.callback(values);
 }
+
+test('admin session migrates from shared legacy storage into the current tab', () => {
+    const shared = new Map([['active_admin', JSON.stringify({ name: 'Admin Uji', nim: '198001012005' })]]);
+    const tab = new Map();
+    const storage = values => ({
+        getItem(key) { return values.get(key) ?? null; },
+        setItem(key, value) { values.set(key, String(value)); },
+        removeItem(key) { values.delete(key); }
+    });
+    const context = vm.createContext({
+        SES: 'kompas_session_admin',
+        LEGACY_SES: 'active_admin',
+        sessionStorage: storage(tab),
+        localStorage: storage(shared)
+    });
+    vm.runInContext(adminSessionWorkflow, context);
+
+    assert.deepEqual(JSON.parse(JSON.stringify(vm.runInContext('loadAdminSession()', context))), { name: 'Admin Uji', nim: '198001012005' });
+    assert.equal(tab.get('kompas_session_admin'), JSON.stringify({ name: 'Admin Uji', nim: '198001012005' }));
+    assert.equal(shared.has('active_admin'), false);
+});
 
 test('admin detects only outstanding return requests for borrowed loans', () => {
     const context = vm.createContext({
