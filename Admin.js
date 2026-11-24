@@ -254,7 +254,7 @@ function checkSession() {
     const a = load(SES, null);
     const user = a && db.users.find(x => x.nim === a.nim && x.role === 'Admin' && x.status === 'Aktif');
     if (a && !user) localStorage.removeItem(SES);
-    if (!user) { window.location.replace('user.html'); return; }
+    if (!user) { window.location.replace('index.html'); return; }
     $('view-login').classList.toggle('hidden', !!user);
     $('app-layout').classList.toggle('hidden', !user);
     $('user-display-name').innerText = user.name;
@@ -551,7 +551,7 @@ function resetPw(nim) {
             </div>
             <ol class="list-decimal pl-5 space-y-2">
                 <li>Berikan kata sandi sementara ini kepada pengguna secara langsung atau melalui saluran yang aman.</li>
-                <li>Pengguna membuka <a class="text-teal-700 font-semibold underline" href="user.html" target="_blank" rel="noopener">halaman login bersama</a>, lalu masuk memakai NPM/NIP atau email dan kata sandi sementara.</li>
+                <li>Pengguna membuka <a class="text-teal-700 font-semibold underline" href="index.html" target="_blank" rel="noopener">halaman login bersama</a>, lalu masuk memakai NPM/NIP atau email dan kata sandi sementara.</li>
                 <li>Setelah masuk, pengguna membuka menu <b>Profil</b> dan mengganti kata sandi sementara di bagian <b>Ubah Kata Sandi</b>.</li>
             </ol>
             <button type="button" onclick="closeModal()" class="btn btn-teal w-full">Selesai</button>

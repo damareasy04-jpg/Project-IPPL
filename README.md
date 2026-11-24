@@ -1,12 +1,12 @@
 # KOMPAS Lab
 
-KOMPAS Lab adalah prototipe aplikasi inventaris laboratorium berbasis HTML, CSS, dan JavaScript. Halaman utama `user.html` memuat login bersama dan kedua dashboard.
+KOMPAS Lab adalah prototipe aplikasi inventaris laboratorium berbasis HTML, CSS, dan JavaScript. Halaman utama `index.html` memuat login bersama dan kedua dashboard.
 
 ## Menjalankan aplikasi
 
 1. Buka folder proyek di Visual Studio Code.
 2. Jalankan server web lokal dari folder proyek, misalnya menggunakan ekstensi Live Server.
-3. Buka `user.html` melalui server lokal sebagai halaman login bersama dan aplikasi utama. Akun admin akan masuk ke panel admin, sedangkan akun pengguna akan masuk ke panel pengguna.
+3. Buka `index.html` melalui server lokal sebagai halaman login bersama dan aplikasi utama. Akun admin akan masuk ke panel admin, sedangkan akun pengguna akan masuk ke panel pengguna.
 4. Data contoh dibuat otomatis saat aplikasi pertama kali dibuka.
 
 Jangan gunakan server publik atau masukkan data pribadi ke aplikasi ini.

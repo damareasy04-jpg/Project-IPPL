@@ -1,6 +1,6 @@
 /* =====================================================================
    KOMPAS Lab - core.js
-   Database bersama untuk user.html dan admin.html (server SQLite dengan cache lokal).
+   Database bersama untuk index.html (mode pengguna dan admin).
    Semua aturan bisnis (stok, denda, status akun, validasi pinjam) ada di sini
    supaya Admin dan User selalu memakai aturan yang sama.
    ===================================================================== */
@@ -118,7 +118,7 @@ function tryLogin(id, pw, mode) {
     if (!u || u.password !== hashPw(pw, u.nim)) { if (++_gagal >= 5) { _kunci = Date.now() + 30000; _gagal = 0; } return { msg: 'Akun tidak ditemukan atau kata sandi salah!' }; }
     _gagal = 0;
     if (mode === 'admin' && u.role !== 'Admin') return { msg: 'Akun ini bukan akun admin.' };
-    if (mode !== 'admin' && mode !== 'shared' && u.role === 'Admin') return { msg: 'Akun admin masuk lewat Panel Admin (admin.html).' };
+    if (mode !== 'admin' && mode !== 'shared' && u.role === 'Admin') return { msg: 'Akun admin masuk lewat Panel Admin (index.html?mode=admin).' };
     if (u.status === 'Menunggu Verifikasi') return { msg: 'Akun Anda belum diverifikasi admin. Mohon tunggu.' };
     if (u.status === 'Nonaktif') return { msg: 'Akun Anda dinonaktifkan. Hubungi admin.' };
     if (u.status === 'Blacklist') return { msg: 'Akun Anda diblokir karena pelanggaran berat. Hubungi admin.' };

@@ -30,7 +30,7 @@ function checkSession() {
     })();
     const admin = adminSession && getUser(adminSession.nim);
     if (admin && admin.role === 'Admin' && admin.status === 'Aktif') {
-        window.location.replace('user.html?mode=admin');
+        window.location.replace('index.html?mode=admin');
         return;
     }
     if (adminSession) localStorage.removeItem('active_admin');
@@ -81,7 +81,7 @@ function handleLogin(e) {
     log(me.role === 'Admin' ? 'Login admin' : 'Login user');
     showAuthAlert('Login berhasil! Memuat dashboard...', 'success');
     if (me.role === 'Admin') {
-        setTimeout(() => window.location.replace('user.html?mode=admin'), 400);
+        setTimeout(() => window.location.replace('index.html?mode=admin'), 400);
     } else {
         ui.view = 'dashboard'; setTimeout(checkSession, 400);
     }
