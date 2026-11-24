@@ -11,6 +11,9 @@ const issueWorkflow = adminSource.slice(start, end);
 const fineStart = adminSource.indexOf('function fineReject(');
 const fineEnd = adminSource.indexOf('// ================= LAPORAN KENDALA =================', fineStart);
 const fineRejectWorkflow = adminSource.slice(fineStart, fineEnd);
+const pendingReturnStart = adminSource.indexOf('const hasPendingReturn =');
+const pendingReturnEnd = adminSource.indexOf(';', pendingReturnStart) + 1;
+const pendingReturnWorkflow = adminSource.slice(pendingReturnStart, pendingReturnEnd);
 
 function createContext(issue, asset) {
     const context = vm.createContext({
@@ -35,6 +38,18 @@ function createContext(issue, asset) {
 function callForm(context, values) {
     context.formData.callback(values);
 }
+
+test('admin detects only outstanding return requests for borrowed loans', () => {
+    const context = vm.createContext({
+        OUT: ['Dipinjam', 'Terlambat'],
+        itemRemaining: item => Math.max(0, item.qty - (item.returnedQty || 0))
+    });
+    vm.runInContext(pendingReturnWorkflow, context);
+
+    assert.equal(vm.runInContext("hasPendingReturn({ status: 'Dipinjam', items: [{ qty: 4, returnedQty: 1, returnRequestedQty: 2 }] })", context), true);
+    assert.equal(vm.runInContext("hasPendingReturn({ status: 'Selesai', items: [{ qty: 4, returnRequestedQty: 2 }] })", context), false);
+    assert.equal(vm.runInContext("hasPendingReturn({ status: 'Dipinjam', items: [{ qty: 4, returnRequestedQty: 0 }] })", context), false);
+});
 
 test('repair reports track partial unit recovery and close only when all units are restored', () => {
     const context = createContext({

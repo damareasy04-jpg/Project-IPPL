@@ -459,7 +459,7 @@ V.dashboard = () => {
             <button onclick="go('assets')" class="w-full text-left p-3 bg-teal-50 rounded-xl border border-teal-100">${garansi} garansi habis dalam 90 hari</button>
         </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         ${stat('Total Aset (Unit)', unit)}
         ${stat('Nilai Buku Aset', rp(A.reduce((s, a) => s + nilaiBuku(a), 0)), 'text-teal-600')}
         ${stat('Pengguna Aktif', db.users.filter(u => u.status === 'Aktif').length, 'text-amber-500')}
@@ -988,7 +988,8 @@ function setLoanStatus(loan, status, note) {
     loan.riwayat ||= [];
     loan.riwayat.push({ t: new Date().toISOString(), s: status, oleh: me().name, catatan: note || '' });
 }
-const hasPendingReturn = pengembalianMenungguCek;
+const hasPendingReturn = loan => !!loan && OUT.includes(loan.status) && loan.items.some(item =>
+    itemRemaining(item) > 0 && Number.isInteger(item.returnRequestedQty) && item.returnRequestedQty > 0);
 ui.lf = 'Semua'; ui.bf = 'Semua'; ui.ff = 'Semua'; ui.isf = 'Semua';
 
 const dash0 = V.dashboard;
