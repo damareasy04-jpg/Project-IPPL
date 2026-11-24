@@ -9,6 +9,10 @@ KOMPAS Lab adalah prototipe aplikasi inventaris laboratorium berbasis HTML, CSS,
 3. Buka `index.html` melalui server lokal sebagai halaman login bersama dan aplikasi utama. Akun admin akan masuk ke panel admin, sedangkan akun pengguna akan masuk ke panel pengguna.
 4. Data contoh dibuat otomatis saat aplikasi pertama kali dibuka.
 
+## Menggunakan akun User dan Admin
+
+Buka alamat aplikasi yang sama pada dua tab di browser yang sama. Masuk sebagai User di tab pertama dan Admin di tab kedua. Pengajuan peminjaman User akan muncul di menu **Peminjaman** Admin; Admin dapat menyetujui atau menolak dengan alasan, dan perubahan status akan terlihat kembali di akun User. Jangan mencampur alamat lokal (misalnya Live Server) dengan alamat GitHub Pages karena masing-masing memiliki penyimpanan browser yang berbeda.
+
 Jangan gunakan server publik atau masukkan data pribadi ke aplikasi ini.
 
 ## Fitur demo
