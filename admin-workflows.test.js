@@ -14,6 +14,13 @@ const fineRejectWorkflow = adminSource.slice(fineStart, fineEnd);
 const adminSessionStart = adminSource.indexOf('function loadAdminSession()');
 const adminSessionEnd = adminSource.indexOf('\nconst addCalendarDays', adminSessionStart);
 const adminSessionWorkflow = adminSource.slice(adminSessionStart, adminSessionEnd);
+const setLoanStatusStart = adminSource.indexOf('function setLoanStatus(');
+const setLoanStatusEnd = adminSource.indexOf('\nconst hasPendingReturn', setLoanStatusStart);
+const setLoanStatusWorkflow = adminSource.slice(setLoanStatusStart, setLoanStatusEnd);
+const loanOkStart = adminSource.indexOf('function loanOk(');
+const loanNoStart = adminSource.indexOf('\nfunction loanNo(', loanOkStart);
+const loanOutStart = adminSource.indexOf('\nfunction loanOut(', loanNoStart);
+const loanDecisionWorkflow = adminSource.slice(loanOkStart, loanOutStart);
 const pendingReturnStart = adminSource.indexOf('const hasPendingReturn =');
 const pendingReturnEnd = adminSource.indexOf(';', pendingReturnStart) + 1;
 const pendingReturnWorkflow = adminSource.slice(pendingReturnStart, pendingReturnEnd);
@@ -40,6 +47,30 @@ function createContext(issue, asset) {
 
 function callForm(context, values) {
     context.formData.callback(values);
+}
+
+function createLoanDecisionContext() {
+    const loan = {
+        id: 'TRX-TEST', nim: '198020261001', nama: 'Budi Uji', status: 'Menunggu Persetujuan',
+        items: [{ toolId: 'ASSET-1', nama: 'Alat Uji', qty: 1 }], riwayat: []
+    };
+    const context = vm.createContext({
+        db: { loans: [loan] },
+        adminUserEligibility: () => '',
+        userOf: nim => ({ nim, status: 'Aktif' }),
+        cekPengajuan: () => '',
+        loanAvailability: () => 1,
+        newPickupCode: () => 'A1B2C3',
+        me: () => ({ name: 'Admin Uji' }),
+        notifyUser: (...args) => { context.notification = args; },
+        log: () => {},
+        save: () => { context.saved = true; },
+        render: () => {},
+        showToast: message => { context.toast = message; },
+        formModal: (title, fields, callback) => { context.formData = { title, fields, callback }; }
+    });
+    vm.runInContext(setLoanStatusWorkflow + loanDecisionWorkflow, context);
+    return context;
 }
 
 test('admin session migrates from shared legacy storage into the current tab', () => {
@@ -73,6 +104,28 @@ test('admin detects only outstanding return requests for borrowed loans', () => 
     assert.equal(vm.runInContext("hasPendingReturn({ status: 'Dipinjam', items: [{ qty: 4, returnedQty: 1, returnRequestedQty: 2 }] })", context), true);
     assert.equal(vm.runInContext("hasPendingReturn({ status: 'Selesai', items: [{ qty: 4, returnRequestedQty: 2 }] })", context), false);
     assert.equal(vm.runInContext("hasPendingReturn({ status: 'Dipinjam', items: [{ qty: 4, returnRequestedQty: 0 }] })", context), false);
+});
+
+test('admin approval moves a pending user loan to ready for pickup', () => {
+    const context = createLoanDecisionContext();
+    vm.runInContext("loanOk('TRX-TEST')", context);
+
+    assert.equal(context.db.loans[0].status, 'Siap Diambil');
+    assert.equal(context.db.loans[0].kode, 'A1B2C3');
+    assert.equal(context.saved, true);
+    assert.match(context.notification[1], /Peminjaman disetujui/);
+});
+
+test('admin rejection records a reason and notifies the user', () => {
+    const context = createLoanDecisionContext();
+    vm.runInContext("loanNo('TRX-TEST')", context);
+    context.formData.callback({ alasan: 'Jadwal alat tidak tersedia' });
+
+    assert.equal(context.db.loans[0].status, 'Ditolak');
+    assert.equal(context.db.loans[0].alasan, 'Jadwal alat tidak tersedia');
+    assert.equal(context.saved, true);
+    assert.match(context.notification[1], /Peminjaman ditolak/);
+    assert.match(context.notification[2], /Jadwal alat tidak tersedia/);
 });
 
 test('repair reports track partial unit recovery and close only when all units are restored', () => {

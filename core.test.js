@@ -149,6 +149,30 @@ test('only mahasiswa can submit a loan request and multiple distinct tools are a
     assert.match(duplicateToolError, /Alat yang sama hanya boleh ditambahkan satu kali/);
 });
 
+test('a valid user loan request starts in the admin confirmation queue', () => {
+    const context = createCoreContext();
+    const nim = evaluate(context, "db.users.find(user => user.role === 'Mahasiswa' && user.status === 'Aktif').nim");
+    evaluate(context, 'db.loans = []; db.fines = []; db.laporan = []');
+    const result = JSON.parse(evaluate(context, `(() => {
+        const user = getUser('${nim}');
+        const asset = db.assets.find(item => tersedia(item) > 0 && item.harga < db.policy.ambangTinggi);
+        const tglAmbil = nextKerja(addDays(todayISO(), 3));
+        const request = {
+            user, items: [{ toolId: asset.id, qty: 1 }],
+            tujuanJenis: 'Mata Kuliah / Praktikum', tujuan: 'Uji konfirmasi admin',
+            tglAmbil, jamAmbil: '09:00', tglKembali: tambahHariKerja(tglAmbil, 1), jamKembali: '15:00'
+        };
+        const error = cekPengajuan(request);
+        if (error) return JSON.stringify({ error });
+        const loan = buatLoan(request, ST.MENUNGGU);
+        return JSON.stringify({ id: loan.id, status: loan.status });
+    })()`));
+
+    assert.equal(result.error, undefined);
+    assert.match(result.id, /^TRX-/);
+    assert.equal(result.status, 'Menunggu Persetujuan');
+});
+
 test('booking conflict detection catches overlapping times but allows adjacent slots', () => {
     const context = createCoreContext();
     evaluate(context, `db.bookings = [{
