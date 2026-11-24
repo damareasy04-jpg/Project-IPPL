@@ -1,0 +1,23 @@
+{
+  "name": "primary",
+  "version": "1.0.0",
+  "description": "KOMPAS Lab adalah prototipe aplikasi inventaris laboratorium berbasis HTML, CSS, dan JavaScript. Halaman utama `user.html` memuat login bersama dan kedua dashboard.",
+  "main": "Admin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damareasy04-jpg/Project-IPPL.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/damareasy04-jpg/Project-IPPL/issues"
+  },
+  "homepage": "https://github.com/damareasy04-jpg/Project-IPPL#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.1.0"
+  }
+}
