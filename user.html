@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOMPAS Lab - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#131C30',
+                        teal: { 600: '#0D9488', 700: '#0F766E' },
+                        graybg: '#F3F4F6'
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-graybg text-gray-800 font-sans min-h-screen flex">
+
+    <div id="user-portal">
+    <!-- ================= VIEW: LOGIN & REGISTER ================= -->
+    <div id="view-login" class="fixed inset-0 bg-graybg z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden min-h-[500px]">
+            
+            <!-- Branding Left (FUTURISTIC 3D VERSION) -->
+            <div class="md:w-1/2 bg-navy p-10 flex flex-col justify-center items-center text-center relative overflow-hidden hidden md:flex">
+                <!-- Background Glow FX -->
+                <div class="absolute top-[-10%] right-[-10%] w-64 h-64 bg-cyan-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                <div class="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                
+                <!-- 3D Logo Container -->
+                <div class="w-24 h-24 mb-6 rounded-3xl bg-gray-900 flex items-center justify-center p-3 shadow-2xl shadow-cyan-500/20 border border-gray-800 relative group z-10">
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-3xl opacity-30 blur-lg group-hover:opacity-50 transition-opacity"></div>
+                    <svg class="w-full h-full relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="mainNorth" x1="50" y1="15" x2="50" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
+                            <linearGradient id="mainSouth" x1="50" y1="50" x2="50" y2="85" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+                            <linearGradient id="mainRing" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#22d3ee"/><stop offset="50%" stop-color="#818cf8"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="42" stroke="url(#mainRing)" stroke-width="3" stroke-dasharray="6 3" class="opacity-80"/>
+                        <circle cx="50" cy="50" r="34" stroke="#334155" stroke-width="2"/>
+                        <circle cx="50" cy="10" r="2.5" fill="#38bdf8"/>
+                        <circle cx="90" cy="50" r="2.5" fill="#818cf8"/>
+                        <circle cx="50" cy="90" r="2.5" fill="#334155"/>
+                        <circle cx="10" cy="50" r="2.5" fill="#818cf8"/>
+                        <g transform="rotate(45 50 50)">
+                            <path d="M50 14 L60 50 L50 46 Z" fill="url(#mainNorth)"/>
+                            <path d="M50 14 L40 50 L50 46 Z" fill="#0284c7"/>
+                            <path d="M50 86 L60 50 L50 54 Z" fill="url(#mainSouth)"/>
+                            <path d="M50 86 L40 50 L50 54 Z" fill="#334155"/>
+                            <rect x="42" y="44" width="16" height="5" rx="1.5" fill="#06b6d4"/>
+                            <rect x="42" y="51" width="16" height="5" rx="1.5" fill="#3b82f6"/>
+                            <circle cx="54" cy="46.5" r="0.8" fill="#ffffff"/>
+                            <circle cx="54" cy="53.5" r="0.8" fill="#ffffff"/>
+                        </g>
+                        <circle cx="50" cy="50" r="4" fill="#ffffff" filter="drop-shadow(0 0 4px #38bdf8)"/>
+                    </svg>
+                </div>
+
+                <h1 class="text-3xl font-black text-white mb-3 relative z-10 tracking-wider">
+                    KOMPAS<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">LAB</span>
+                </h1>
+                <p class="text-gray-400 text-sm leading-relaxed relative z-10 px-6">
+                    Sistem Informasi Manajemen Inventaris Alat Laboratorium IT.
+                </p>
+            </div>
+
+            <!-- Form Area Right -->
+            <div class="w-full md:w-1/2 p-8 md:p-12 relative flex flex-col justify-center overflow-y-auto">
+                <!-- Alert Box -->
+                <div id="auth-alert" class="hidden mb-4 px-4 py-3 rounded-lg text-sm font-medium flex items-center transition-all">
+                    <i id="auth-alert-icon" class="fas mr-2"></i>
+                    <span id="auth-alert-msg"></span>
+                </div>
+
+                <!-- Form Login -->
+                <div id="auth-form-login">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Selamat Datang</h2>
+                        <p class="text-sm text-gray-500 mt-1">Silakan masuk ke akun Anda</p>
+                    </div>
+                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">NPM / NIP / Email</label>
+                            <input type="text" id="login-email" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="NPM/NIP atau Email">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kata Sandi</label>
+                            <input type="password" id="login-password" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="••••••••">
+                            <div class="text-right mt-1">
+                                <button type="button" onclick="toggleAuthMode('forgot')" class="text-xs text-teal-600 hover:underline font-medium">Lupa Kata Sandi?</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 text-white font-bold rounded-lg py-3 hover:bg-teal-700 transition-colors shadow-md mt-2">
+                            Masuk
+                        </button>
+                    </form>
+                    <p class="text-center text-sm text-gray-600 mt-6">
+                        Belum punya akun? <button onclick="toggleAuthMode('register')" class="text-teal-600 font-bold hover:underline">Daftar sekarang</button>
+                    </p>
+                </div>
+
+                <!-- Form Register -->
+                <div id="auth-form-register" class="hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Daftar Akun Baru</h2>
+                        <p class="text-sm text-gray-500 mt-1">Akun dapat langsung digunakan setelah pendaftaran.</p>
+                    </div>
+                    <form onsubmit="handleRegister(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+                            <input type="text" id="reg-name" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="Budi Santoso">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">NPM / NIP</label>
+                                <input type="text" id="reg-nim" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="198020...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Peran Pengguna</label>
+<select id="reg-role" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600">
+<option value="Mahasiswa">Mahasiswa</option>
+</select>
+                            </div>
+                        </div>
+                        <div>
+<label class="block text-sm font-semibold text-gray-700 mb-1">Program Studi / Unit</label>
+<select id="reg-prodi" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600"></select>
+</div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                            <input type="email" id="reg-email" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="nama@student.uir.ac.id">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Kata Sandi</label>
+                            <input type="password" id="reg-password" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="">
+                        </div>
+                        <button type="submit" class="w-full bg-navy text-white font-bold rounded-lg py-3 hover:bg-gray-800 transition-colors shadow-md mt-2">
+                            Daftarkan Akun
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Form Lupa Sandi -->
+                <div id="auth-form-forgot" class="hidden">
+                    <div class="mb-6">
+                        <button onclick="toggleAuthMode('login')" class="text-gray-400 hover:text-gray-800 mb-4 inline-block"><i class="fas fa-arrow-left"></i> Kembali</button>
+                        <h2 class="text-2xl font-bold text-gray-800">Lupa Kata Sandi</h2>
+                        <p class="text-sm text-gray-500 mt-1">Cocokkan NPM/NIP dengan email terdaftar, lalu buat kata sandi baru. Permintaan reset tetap tercatat di menu Pengguna dan Peran.</p>
+                        <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">Mode demo: kecocokan NPM/NIP dan email bukan verifikasi identitas. Jangan gunakan akun atau kata sandi nyata.</p>
+                    </div>
+                    <form onsubmit="handleForgotPassword(event)" class="space-y-4">
+                        <div id="forgot-account-fields" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">NPM / NIP</label>
+                                <input type="text" id="forgot-nim" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="NPM/NIP terdaftar">
+                            </div>
+                            <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Email Kampus Terdaftar</label>
+                                <input type="email" id="forgot-email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="nama@student.uir.ac.id">
+                            </div>
+                        </div>
+                        <div id="forgot-new-password-fields" class="hidden space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Kata Sandi Baru</label>
+                                <input type="password" id="forgot-new-password" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" autocomplete="new-password">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Konfirmasi Kata Sandi Baru</label>
+                                <input type="password" id="forgot-confirm-password" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" autocomplete="new-password">
+                            </div>
+                        </div>
+                        <button id="forgot-submit-button" type="submit" class="w-full bg-teal-600 text-white font-bold rounded-lg py-3 hover:bg-teal-700 transition-colors shadow-md mt-2">
+                            Lanjutkan
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- ===== MAIN LAYOUT (SIDEBAR & CONTENT) ================= -->
+    <div id="app-layout" class="flex w-full h-screen overflow-hidden hidden">
+        <!-- Sidebar Navigation -->
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-30 lg:hidden" onclick="toggleSidebar()"></div>
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 -translate-x-full lg:translate-x-0 transition-transform w-64 bg-navy text-gray-300 flex flex-col justify-between p-4 flex-shrink-0 h-screen overflow-y-auto">
+            <div>
+                <!-- LOGO BRAND KOMPAS LAB (FUTURISTIC 3D VERSION - SIDEBAR) -->
+                <div class="flex items-center gap-3 px-3 py-4 mb-4 border-b border-gray-800">
+                    <!-- Container Logo -->
+                    <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center p-1 shadow-lg shadow-cyan-500/10 border border-gray-700 relative group shrink-0">
+                        <div class="absolute inset-0 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-xl opacity-20 blur-sm group-hover:opacity-40 transition-opacity"></div>
+                        <svg class="w-full h-full relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="sideNorth" x1="50" y1="15" x2="50" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#6366f1"/></linearGradient>
+                                <linearGradient id="sideSouth" x1="50" y1="50" x2="50" y2="85" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#1e293b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+                                <linearGradient id="sideRing" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#22d3ee"/><stop offset="50%" stop-color="#818cf8"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>
+                            </defs>
+                            <circle cx="50" cy="50" r="42" stroke="url(#sideRing)" stroke-width="3" stroke-dasharray="6 3" class="opacity-80"/>
+                            <circle cx="50" cy="50" r="34" stroke="#334155" stroke-width="2"/>
+                            <circle cx="50" cy="10" r="2.5" fill="#38bdf8"/>
+                            <circle cx="90" cy="50" r="2.5" fill="#818cf8"/>
+                            <circle cx="50" cy="90" r="2.5" fill="#334155"/>
+                            <circle cx="10" cy="50" r="2.5" fill="#818cf8"/>
+                            <g transform="rotate(45 50 50)">
+                                <path d="M50 14 L60 50 L50 46 Z" fill="url(#sideNorth)"/>
+                                <path d="M50 14 L40 50 L50 46 Z" fill="#0284c7"/>
+                                <path d="M50 86 L60 50 L50 54 Z" fill="url(#sideSouth)"/>
+                                <path d="M50 86 L40 50 L50 54 Z" fill="#334155"/>
+                                <rect x="42" y="44" width="16" height="5" rx="1.5" fill="#06b6d4"/>
+                                <rect x="42" y="51" width="16" height="5" rx="1.5" fill="#3b82f6"/>
+                                <circle cx="54" cy="46.5" r="0.8" fill="#ffffff"/>
+                                <circle cx="54" cy="53.5" r="0.8" fill="#ffffff"/>
+                            </g>
+                            <circle cx="50" cy="50" r="4" fill="#ffffff" filter="drop-shadow(0 0 4px #38bdf8)"/>
+                        </svg>
+                    </div>
+                    <!-- Teks Brand Baru -->
+                    <div class="flex flex-col">
+                        <span class="font-black text-lg tracking-wide text-white leading-none mt-1">
+                            KOMPAS<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">LAB</span>
+                        </span>
+                        <span class="text-[9px] text-gray-400 font-medium tracking-wider uppercase mt-1">Sistem Inventaris</span>
+                    </div>
+                </div>
+
+                <nav class="space-y-1">
+                    <button id="nav-dashboard" onclick="switchView('dashboard')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white active">
+                        <i class="fas fa-home w-5"></i> Beranda
+                    </button>
+                    <button id="nav-catalog" onclick="switchView('catalog')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-desktop w-5"></i> Katalog Alat
+                    </button>
+                    <button id="nav-peminjaman" onclick="switchView('peminjaman')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-hand-holding w-5"></i> Peminjaman Alat
+                    </button>
+                    <button id="nav-booking" onclick="switchView('booking')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-door-open w-5"></i> Booking Ruang Lab
+                    </button>
+                    <button id="nav-pengembalian" onclick="switchView('pengembalian')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-clipboard-list w-5"></i> Peminjaman Saya
+                    </button>
+                    <button id="nav-laporan" onclick="switchView('laporan')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-history w-5"></i> Riwayat
+                    </button>
+                    
+                    <div class="pt-4 mt-2 border-t border-gray-800"></div>
+                    <span class="px-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Layanan Lain</span>
+                    
+                    <button id="nav-pelaporan" onclick="switchView('pelaporan')" class="w-full mt-2 flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-exclamation-triangle w-5 text-amber-500"></i> Lapor Kendala
+                    </button>
+                    <button id="nav-aturan" onclick="switchView('aturan')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-book w-5 text-sky-400"></i> Aturan Peminjaman
+                    </button>
+                    <button id="nav-sanksi" onclick="switchView('sanksi')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-file-invoice-dollar w-5 text-rose-500"></i> Sanksi & Denda
+                    </button>
+                    <button id="nav-bantuan" onclick="switchView('bantuan')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-question-circle w-5"></i> Bantuan & FAQ
+                    </button>
+                    <button id="nav-profil" onclick="switchView('profil')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-gray-800 hover:text-white">
+                        <i class="fas fa-user-cog w-5"></i> Profil & Akun
+                    </button>
+                </nav>
+            </div>
+
+            <!-- User Info & Logout Button -->
+            <div class="pt-4 mt-4 border-t border-gray-800">
+                <div class="flex items-center justify-between mb-3 px-2">
+                    <div class="flex items-center gap-3">
+                        <div id="user-avatar" class="w-9 h-9 rounded-full bg-teal-600 flex items-center justify-center font-bold text-white text-sm">MS</div>
+                        <div>
+                            <p id="user-display-name" class="text-sm font-semibold text-white truncate max-w-[110px]">Mahasiswa TI</p>
+                            <p class="text-xs text-gray-500" id="user-status">Mahasiswa</p>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-lg text-xs font-semibold transition-colors">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col min-w-0 h-screen">
+            <!-- Header Bar -->
+            <!-- ================= HEADER BAR ================= -->
+        <header class="bg-white border-b border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3"><button onclick="toggleSidebar()" class="lg:hidden text-gray-500" aria-label="Menu"><i class="fas fa-bars text-lg"></i></button><h1 id="page-title" class="text-lg md:text-xl font-bold text-gray-800">Beranda</h1></div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden md:block">
+<input type="text" id="global-search" oninput="onGlobalSearch(this.value)" placeholder="Cari alat di katalog..." class="bg-gray-100 rounded-lg pl-9 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 w-64">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                </div>
+                <!-- Notifikasi -->
+            <div class="relative" id="notif-wrapper">
+                <button onclick="toggleNotifPanel(event)" class="relative p-2 text-gray-400 hover:text-teal-600 transition-colors" title="Notifikasi">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span id="notif-badge" class="hidden absolute top-0 right-0 min-w-[16px] h-4 px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">0</span>
+                </button>
+
+                <div id="notif-panel" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50">
+                        <h4 class="text-sm font-bold text-gray-800">Notifikasi</h4>
+                        <button onclick="markAllNotifRead()" class="text-xs text-teal-600 hover:underline font-semibold">Tandai semua dibaca</button>
+                    </div>
+                    <div id="notif-list" class="max-h-80 overflow-y-auto divide-y divide-gray-100"></div>
+                </div>
+            </div>
+            </div>
+        </header>
+
+                    <!-- Dynamic Views Container -->
+            <div class="p-4 md:p-8 space-y-6 flex-1 overflow-y-auto relative">
+                
+                <!-- Notifikasi Toast (Global) -->
+                <div id="global-toast" class="hidden fixed top-20 right-4 md:right-8 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 transition-opacity">
+                    <i id="toast-icon" class="fas fa-check-circle text-green-400"></i>
+                    <span id="toast-msg" class="text-sm font-medium">Tindakan berhasil!</span>
+                </div>
+
+                <!-- VIEW: DASHBOARD -->
+                <section id="view-dashboard" class="space-y-6">
+<div id="dash-alert" class="hidden"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-xs text-gray-400 uppercase font-semibold mb-1">Total Aset</p>
+                            <h3 id="stat-total" class="text-2xl font-bold text-gray-800">0</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-xs text-gray-400 uppercase font-semibold mb-1">Tersedia</p>
+                            <h3 id="stat-available" class="text-2xl font-bold text-teal-600">0</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-xs text-gray-400 uppercase font-semibold mb-1">Sedang Dipinjam</p>
+                            <h3 id="stat-borrowed" class="text-2xl font-bold text-amber-500">0</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-xs text-gray-400 uppercase font-semibold mb-1">Perbaikan</p>
+                            <h3 id="stat-repair" class="text-2xl font-bold text-rose-500">0</h3>
+                        </div>
+                    </div>
+                    <!-- Hero Banner & Informasi Lab (Pengganti Grafik) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <!-- Banner Hero / Slogan & Quick Actions -->
+                        <div class="lg:col-span-2 bg-gradient-to-r from-teal-600 to-slate-900 p-6 rounded-2xl text-white shadow-md flex flex-col justify-between relative overflow-hidden">
+                            <div class="relative z-10 max-w-lg">
+                                <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide uppercase text-teal-100 mb-3 inline-block">
+                                    <i class="fas fa-microchip mr-1"></i> Sistem Inventaris & Fasilitas Lab TI
+                                </span>
+                                <h2 class="text-2xl font-bold mb-2">Pinjam Alat & Booking Ruang Lab Tanpa Ribet!</h2>
+                                <p class="text-teal-100 text-sm mb-5 leading-relaxed">
+                                    Akses kebutuhan praktikum, riset, dan kegiatan komputasi kamu dalam satu pintu. Cepat, transparan, dan terintegrasi secara digital.
+                                </p>
+                                <div class="flex flex-wrap gap-3">
+                                    <button onclick="switchView('catalog')" class="px-4 py-2.5 bg-white text-teal-800 rounded-xl font-bold text-xs hover:bg-teal-50 transition shadow-sm flex items-center gap-2">
+                                        <i class="fas fa-boxes"></i> Jelajahi Katalog Alat
+                                    </button>
+                                    <button onclick="switchView('booking')" class="px-4 py-2.5 bg-teal-500/30 border border-white/30 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition flex items-center gap-2">
+                                        <i class="fas fa-door-open"></i> Booking Ruang Lab
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Ornamen Dekoratid Icon Background -->
+                            <div class="absolute -right-6 -bottom-6 text-white/10 text-9xl pointer-events-none select-none">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                        </div>
+
+                        <!-- Info Operasional & Tata Tertib Singkat -->
+                        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                        <i class="fas fa-bullhorn text-teal-600"></i> Informasi & Jam Layanan
+                                    </h3>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" title="Status Lab Operasional"></span>
+                                </div>
+                                <div class="space-y-3 text-xs">
+                                    <div class="p-3 bg-teal-50/60 rounded-xl border border-teal-100 text-teal-900">
+                                        <p class="font-semibold text-teal-800 mb-0.5"><i class="far fa-clock mr-1"></i> Jam Operasional Lab</p>
+                                        <p id="info-jam" class="text-gray-600">Senin - Jumat: 08.00 - 16.00 WIB</p>
+                                    </div>
+                                    <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-100 text-amber-900">
+                                        <p class="font-semibold text-amber-800 mb-0.5"><i class="fas fa-exclamation-triangle mr-1"></i> Aturan Pengembalian</p>
+                                        <p class="text-gray-600">Serahkan alat langsung ke Admin dan tunjukkan bukti peminjaman saat mengembalikan unit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                        <h3 class="font-bold text-gray-800 mb-4 text-sm">Transaksi Terbaru Anda</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+                                    <tr>
+                                        <th class="py-3 px-4">Nama Alat</th>
+                                        <th class="py-3 px-4">Tanggal Pengajuan</th>
+                                        <th class="py-3 px-4">Status Pengajuan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-transactions-table" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: KATALOG ALAT -->
+                <section id="view-catalog" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                <div id="cat-filters" class="flex flex-wrap gap-2"></div>
+                <input type="text" id="cat-search" oninput="onCatSearch(this.value)" placeholder="Cari nama, kode, atau lokasi..." class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-teal-600 w-full md:w-72">
+            </div>
+            <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+            <div id="empty-state" class="hidden text-center py-12 text-gray-400">Alat tidak ditemukan.</div>
+        </section>
+
+                <!-- VIEW: DETAIL ALAT -->
+                <section id="view-detail" class="hidden bg-white rounded-xl border border-gray-100 p-4 md:p-8 shadow-sm">
+            <button onclick="switchView('catalog')" class="text-sm text-teal-600 font-semibold hover:underline flex items-center gap-2 mb-6"><i class="fas fa-arrow-left"></i> Kembali ke Katalog</button>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="w-full md:w-1/3 bg-gray-50 rounded-2xl p-8 flex flex-col items-center justify-center border border-gray-100">
+                    <i id="detail-icon" class="fas fa-desktop text-8xl text-teal-600"></i>
+                </div>
+                <div class="flex-1 space-y-5">
+                    <div class="flex justify-between items-start gap-3">
+                        <div><h2 id="detail-title" class="text-2xl md:text-3xl font-bold text-gray-800">Nama Alat</h2><p id="detail-id" class="text-sm text-gray-400 font-mono mt-1">ID-ALAT</p></div>
+                        <span id="detail-status" class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">TERSEDIA</span>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed"><strong>Spesifikasi:</strong> <span id="detail-spek">-</span></p>
+                    <p id="detail-rules" class="text-sm text-gray-600 leading-relaxed border-y border-gray-100 py-4"></p>
+                    <div class="grid grid-cols-2 gap-4 py-2 text-sm">
+                        <div><p class="text-gray-400">Kategori</p><p id="detail-category" class="font-semibold text-gray-700">-</p></div>
+                        <div><p class="text-gray-400">Lokasi Lab</p><p id="detail-location" class="font-semibold text-gray-700">-</p></div>
+                        <div><p class="text-gray-400">Kondisi Unit</p><p id="detail-kondisi" class="font-semibold text-gray-700">-</p></div>
+                        <div><p class="text-gray-400">Stok Tersedia</p><p id="detail-available" class="font-bold text-teal-600 text-lg">-</p></div>
+                    </div>
+                    <div class="pt-2 flex gap-3">
+                        <button id="btn-pinjam-detail" class="flex-1 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold text-sm shadow-md transition-colors flex items-center justify-center gap-2"><i class="fas fa-clipboard-list"></i> Ajukan Peminjaman</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                <!-- VIEW: PEMINJAMAN ALAT -->
+                <section id="view-peminjaman" class="hidden bg-white p-4 md:p-8 rounded-xl border border-gray-100 shadow-sm max-w-3xl mx-auto">
+            <h2 class="text-xl font-bold text-gray-800 mb-2">Formulir Pengajuan Peminjaman</h2>
+            <p class="text-sm text-gray-500 mb-4">Peminjaman hanya untuk mahasiswa. Pilih satu atau beberapa jenis alat dari katalog, tentukan jumlah tiap alat dan jadwal, lalu kirim satu pengajuan untuk ditinjau Admin. Baca <button type="button" onclick="switchView('aturan')" class="text-teal-600 font-semibold hover:underline">aturan peminjaman</button> sebelum mengajukan.</p>
+            <form id="form-peminjaman" onsubmit="handlePeminjamanSubmit(event)" class="space-y-5">
+                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <label class="block text-xs font-bold text-gray-700">Alat yang Dipinjam</label>
+                        <button type="button" onclick="switchView('catalog')" class="text-xs font-semibold text-teal-700 hover:underline">Kembali ke Katalog</button>
+                    </div>
+                    <div id="pinjam-items" class="space-y-2"></div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Tipe Peminjaman</label>
+                    <select id="pinjam-tipe" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 bg-gray-50">
+                        <option value="Individu">Individu</option>
+                        <option value="Kelompok / Kelas (1 Penanggung Jawab)">Kelompok / Kelas (1 Penanggung Jawab)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <p class="col-span-2 text-xs font-bold text-gray-700">2. Atur jadwal ambil, jadwal kembali, dan tujuan peminjaman</p>
+                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Ambil</label><input type="date" id="pinjam-tgl-pinjam" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600"></div>
+                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Jam Ambil</label><input type="time" id="pinjam-jam-pinjam" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600"></div>
+                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Kembali</label><input type="date" id="pinjam-tgl-kembali" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600"></div>
+                    <div><label class="block text-xs font-bold text-gray-700 mb-1">Jam Kembali</label><input type="time" id="pinjam-jam-kembali" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600"></div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Tujuan Peminjaman</label>
+                    <select id="pinjam-tujuan-jenis" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 mb-2"></select>
+                    <textarea id="pinjam-tujuan" rows="2" required placeholder="Detail tujuan..." class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Surat Pengantar (wajib untuk proyek tugas akhir)</label>
+                    <input type="file" id="pinjam-surat" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp" class="w-full border rounded-lg px-3 py-2 text-sm outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                    <p class="mt-1 text-[11px] text-gray-400">PDF, DOC, DOCX, JPG, PNG, GIF, atau WEBP; ukuran maksimal 1 MB. Admin dapat mengunduh lampiran pada pengajuan.</p>
+                </div>
+                <div class="flex items-start gap-2 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                    <input type="checkbox" id="syarat" required class="mt-1">
+                    <label for="syarat" class="text-xs text-yellow-800 leading-tight"><span class="font-bold">3. Periksa dan kirim:</span> <span id="syarat-teks"></span> Ringkasan pengajuan akan ditampilkan sebelum dikirim.</label>
+                </div>
+                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-lg text-sm transition-colors shadow-md">Tinjau &amp; Kirim Pengajuan</button>
+            </form>
+        </section>
+
+                <!-- VIEW: PENGEMBALIAN ALAT -->
+                <section id="view-pengembalian" class="hidden space-y-4">
+            <div class="bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-4 text-sm">Peminjaman Aktif dan Pengembalian</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100"><tr><th class="py-3 px-4">Alat</th><th class="py-3 px-4">Jatuh Tempo</th><th class="py-3 px-4">Status</th><th class="py-3 px-4">Aksi</th></tr></thead>
+                        <tbody id="pengembalian-table" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+                <!-- VIEW: LAPORAN / RIWAYAT -->
+                <section id="view-laporan" class="hidden space-y-6">
+                    <!-- Riwayat Peminjaman Alat -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm"><i class="fas fa-boxes text-teal-600 mr-2"></i>Riwayat Peminjaman Alat Anda</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600">
+                                <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-4">ID Transaksi</th>
+                                        <th class="px-6 py-4">Nama Alat</th>
+                                        <th class="px-6 py-4">Tujuan</th>
+                                        <th class="px-6 py-4">Tgl Pinjam</th>
+                                        <th class="px-6 py-4">Tgl Kembali</th>
+                                        <th class="px-6 py-4">Status Pengajuan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="laporan-table" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Riwayat Booking Ruang Lab -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm"><i class="fas fa-door-open text-teal-600 mr-2"></i>Riwayat Booking Ruang Lab</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600">
+                                <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-4">ID Booking</th>
+                                        <th class="px-6 py-4">Ruang Lab</th>
+                                        <th class="px-6 py-4">Tujuan</th>
+                                        <th class="px-6 py-4">Tanggal Praktikum/Kegiatan</th>
+                                        <th class="px-6 py-4">Jam</th>
+                                        <th class="px-6 py-4">Status</th>
+                                        <th class="px-6 py-4">Catatan</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="booking-history-table" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                                <!-- VIEW: BOOKING RUANG LAB -->
+                                <section id="view-booking" class="hidden max-w-6xl mx-auto">
+                                                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+                        <!-- Form Booking -->
+                        <div class="lg:col-span-3 bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Booking Ruang Laboratorium</h2>
+                            <p class="text-sm text-gray-500 mb-6">Cek jadwal terisi pada kalender, lalu ajukan pemakaian ruang lab untuk kegiatan perkuliahan, lomba, atau penelitian. Baca <button type="button" onclick="switchView('aturan')" class="text-teal-600 font-semibold hover:underline">aturan booking</button> sebelum mengajukan.</p>
+
+                            <form id="form-booking" onsubmit="handleBookingSubmit(event)" class="space-y-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Pilih Ruang Lab</label>
+                                    <select id="booking-ruang" onchange="onRuangBookingChange()" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 bg-white"><option value="">-- Pilih Ruang --</option></select>
+                                    <p id="booking-kapasitas-info" class="text-[11px] text-gray-400 mt-1"></p>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Mulai</label>
+                                        <input type="date" id="booking-tgl-mulai" onchange="onTglMulaiBooking()" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Selesai</label>
+                                        <input type="date" id="booking-tgl-selesai" onchange="cekBentrokLive()" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Jam Mulai</label>
+                                        <input type="time" id="booking-jam-mulai" min="08:00" max="16:00" onchange="cekBentrokLive()" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Jam Selesai</label>
+                                        <input type="time" id="booking-jam-selesai" min="08:00" max="16:00" onchange="cekBentrokLive()" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                </div>
+                                <p id="bk-hint" class="text-[11px] text-gray-400 -mt-3"></p>
+
+                                <!-- Status bentrok (diisi JS) -->
+                                <div id="booking-info" class="hidden"></div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Jumlah Peserta</label>
+                                        <input type="number" id="booking-peserta" min="1" required placeholder="Contoh: 20" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Penanggung Jawab</label>
+                                        <input type="text" id="booking-pj" required placeholder="Nama lengkap" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">Kontak PJ (HP/WA)</label>
+                                        <input type="tel" id="booking-pj-kontak" required placeholder="08xxxxxxxxxx" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Tujuan Penggunaan (Mata Kuliah / Acara)</label>
+                                    <textarea id="booking-tujuan" rows="3" required placeholder="Jelaskan secara singkat tujuan pemakaian ruang..." class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600"></textarea>
+                                </div>
+
+                                <button type="submit" class="w-full bg-navy hover:bg-gray-800 text-white font-bold py-3 rounded-lg text-sm transition-colors shadow-md">
+                                    Ajukan Jadwal Booking
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Kalender Jadwal Ruang -->
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-bold text-gray-800 text-sm"><i class="far fa-calendar-alt text-teal-600 mr-2"></i>Kalender Jadwal Ruang</h3>
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" onclick="geserKalenderBooking(-1)" class="w-7 h-7 rounded-lg hover:bg-gray-100 text-gray-500"><i class="fas fa-chevron-left text-xs"></i></button>
+                                        <span id="booking-kalender-judul" class="text-xs font-bold text-gray-700 w-28 text-center">-</span>
+                                        <button type="button" onclick="geserKalenderBooking(1)" class="w-7 h-7 rounded-lg hover:bg-gray-100 text-gray-500"><i class="fas fa-chevron-right text-xs"></i></button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-gray-400 mb-1">
+                                    <span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span class="text-gray-300">Sab</span><span class="text-gray-300">Min</span>
+                                </div>
+                                <div id="booking-kalender-grid" class="grid grid-cols-7 gap-1"></div>
+                                <div class="flex flex-wrap gap-x-4 gap-y-1 mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500">
+                                    <span><span class="inline-block w-2.5 h-2.5 rounded bg-rose-200 mr-1"></span>Terisi (disetujui)</span>
+                                    <span><span class="inline-block w-2.5 h-2.5 rounded bg-amber-200 mr-1"></span>Menunggu persetujuan</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                                <h3 id="booking-jadwal-judul" class="font-bold text-gray-800 text-sm mb-3">Jadwal ruang</h3>
+                                <div id="booking-jadwal-list" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                        <div class="border-b border-gray-100 bg-gray-50 p-4">
+                            <h3 class="text-sm font-bold text-gray-800"><i class="fas fa-clipboard-list mr-2 text-teal-600"></i>Booking Saya</h3>
+                            <p class="mt-1 text-xs text-gray-500">Halaman utama untuk memantau booking dan melakukan pembatalan sebelum tanggal mulai. Riwayat hanya menampilkan ringkasan tanpa tindakan.</p>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600">
+                                <thead class="border-b border-gray-100 bg-gray-50 font-medium text-gray-500"><tr><th class="px-4 py-3">Booking</th><th class="px-4 py-3">Jadwal</th><th class="px-4 py-3">Status / Tindakan</th></tr></thead>
+                                <tbody id="booking-my-table" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: PELAPORAN KENDALA -->
+                <section id="view-pelaporan" class="hidden space-y-6 max-w-4xl mx-auto">
+
+                    <!-- Judul & alur singkat -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                        <h2 class="text-xl font-bold text-gray-800 mb-1">Lapor Kerusakan / Kendala Alat</h2>
+                        <p class="text-sm text-gray-500 mb-5">Gunakan form ini jika alat rusak, hilang, atau bermasalah. Jangan membongkar atau memperbaiki alat sendiri.</p>
+                        <ol class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                            <li class="flex items-start gap-2"><span class="w-6 h-6 shrink-0 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center">1</span><span><b class="text-gray-800">Isi laporan</b><br><span class="text-gray-500">Pilih alat, jelaskan masalah, unggah foto.</span></span></li>
+                            <li class="flex items-start gap-2"><span class="w-6 h-6 shrink-0 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center">2</span><span><b class="text-gray-800">Ditinjau admin</b><br><span class="text-gray-500">Admin memeriksa laporan Anda.</span></span></li>
+                            <li class="flex items-start gap-2"><span class="w-6 h-6 shrink-0 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center">3</span><span><b class="text-gray-800">Perbaikan</b><br><span class="text-gray-500">Alat diperbaiki atau diganti.</span></span></li>
+                            <li class="flex items-start gap-2"><span class="w-6 h-6 shrink-0 rounded-full bg-green-600 text-white font-bold flex items-center justify-center">4</span><span><b class="text-gray-800">Selesai</b><br><span class="text-gray-500">Anda dapat notifikasi di lonceng.</span></span></li>
+                        </ol>
+                    </div>
+
+                    <!-- Panel sukses (diisi JS setelah laporan terkirim) -->
+                    <div id="lapor-sukses" class="hidden bg-green-50 border border-green-200 rounded-xl p-5"></div>
+
+                    <!-- Form laporan -->
+                    <div class="bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
+                        <h3 class="font-bold text-gray-800 text-sm mb-5 border-b pb-2">Form Laporan Baru</h3>
+                        <form id="form-lapor" onsubmit="handleLaporSubmit(event)" class="space-y-5">
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Alat yang Bermasalah <span class="text-rose-500">*</span></label>
+                                <select id="lapor-alat" onchange="updateLaporForm()" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 bg-white">
+                                    <option value="">-- Pilih Alat --</option>
+                                </select>
+                                <p class="text-[11px] text-gray-400 mt-1">Alat yang sedang Anda pinjam ada di kelompok paling atas.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Jenis Kendala <span class="text-rose-500">*</span></label>
+                                    <select id="lapor-jenis" onchange="updateLaporForm()" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 bg-white">
+                                        <option>Rusak Fisik</option>
+                                        <option>Tidak Menyala / Error</option>
+                                        <option>Performa Tidak Normal</option>
+                                        <option>Komponen Kurang / Tidak Lengkap</option>
+                                        <option>Alat / Komponen Hilang</option>
+                                        <option>Lainnya</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Ditemukan Saat <span class="text-rose-500">*</span></label>
+                                    <select id="lapor-ditemukan" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 bg-white">
+                                        <option>Saat mengambil alat</option>
+                                        <option>Saat sedang digunakan</option>
+                                        <option>Saat akan mengembalikan</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Info dinamis sesuai jenis kendala -->
+                            <div id="lapor-info" class="text-xs rounded-lg border px-4 py-3 leading-relaxed"></div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-2">Tingkat Keparahan <span class="text-rose-500">*</span></label>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <label class="flex items-start gap-2 border rounded-lg p-3 cursor-pointer hover:border-teal-600 text-xs">
+                                        <input type="radio" name="lapor-tingkat" value="Ringan" class="mt-0.5 accent-teal-600">
+                                        <span><b class="text-gray-800">Ringan</b><br><span class="text-gray-500">Alat masih bisa dipakai normal.</span></span>
+                                    </label>
+                                    <label class="flex items-start gap-2 border rounded-lg p-3 cursor-pointer hover:border-teal-600 text-xs">
+                                        <input type="radio" name="lapor-tingkat" value="Sedang" class="mt-0.5 accent-teal-600">
+                                        <span><b class="text-gray-800">Sedang</b><br><span class="text-gray-500">Fungsi terganggu, masih bisa dipakai terbatas.</span></span>
+                                    </label>
+                                    <label class="flex items-start gap-2 border rounded-lg p-3 cursor-pointer hover:border-teal-600 text-xs">
+                                        <input type="radio" name="lapor-tingkat" value="Berat" class="mt-0.5 accent-teal-600">
+                                        <span><b class="text-gray-800">Berat</b><br><span class="text-gray-500">Alat tidak bisa dipakai sama sekali.</span></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Tanggal Kejadian <span class="text-rose-500">*</span></label>
+                                    <input type="date" id="lapor-tgl" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">Jumlah Unit Terdampak <span class="text-rose-500">*</span></label>
+                                    <input type="number" id="lapor-jumlah" min="1" value="1" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                    <p id="lapor-jumlah-info" class="text-[11px] text-gray-400 mt-1">Pilih alat terlebih dahulu</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Deskripsi Detail <span class="text-rose-500">*</span></label>
+                                <textarea id="lapor-deskripsi" rows="4" required minlength="20" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600" placeholder="Apa yang terjadi? Kapan mulai terjadi? Apa yang sedang Anda lakukan saat itu? (minimal 20 karakter)"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Foto Bukti Kendala <span id="lapor-foto-label" class="font-normal text-gray-400">(wajib)</span></label>
+                                <input type="file" id="lapor-foto" accept="image/*" onchange="previewLaporFoto(event)" class="w-full border rounded-lg px-3 py-2 text-sm outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                                <p class="text-[11px] text-gray-400 mt-1">JPG / PNG, maksimal 2 MB.</p>
+                                <img id="lapor-foto-preview" src="" alt="Pratinjau foto kendala" class="hidden mt-3 max-h-48 rounded-lg border object-contain">
+                            </div>
+
+                            <label class="flex items-start gap-2 text-xs text-gray-600 cursor-pointer">
+                                <input type="checkbox" id="lapor-setuju" required class="mt-0.5 accent-teal-600">
+                                <span>Saya menyatakan informasi di atas benar. Penilaian kerusakan akibat kelalaian dilakukan oleh admin.</span>
+                            </label>
+
+                            <button type="submit" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-2.5 rounded-lg text-sm transition-colors shadow-md">
+                                <i class="fas fa-paper-plane mr-1"></i> Kirim Laporan
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Riwayat laporan -->
+                    <div id="lapor-riwayat" class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm"><i class="fas fa-clipboard-list text-teal-600 mr-2"></i>Riwayat Laporan Saya</h3>
+                            <span id="lapor-ringkasan" class="text-xs text-gray-500">Total 0 | Diproses 0 | Selesai 0</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600">
+                                <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-3">ID</th>
+                                        <th class="px-6 py-3">Alat</th>
+                                        <th class="px-6 py-3">Kendala</th>
+                                        <th class="px-6 py-3">Tgl Kejadian</th>
+                                        <th class="px-6 py-3">Status</th>
+                                        <th class="px-6 py-3">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lapor-tabel" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                                <!-- VIEW: SANKSI & DENDA -->
+                <section id="view-sanksi" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Status Akun (diisi JS) -->
+                        <div id="akun-card" class="p-6 rounded-xl border shadow-sm bg-white border-green-200">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div id="akun-icon" class="w-12 h-12 rounded-full flex items-center justify-center text-xl bg-green-100 text-green-600"><i class="fas fa-check"></i></div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800">Status Akun</h3>
+                                    <p id="akun-judul" class="text-sm font-semibold text-green-600">Aman</p>
+                                </div>
+                            </div>
+                            <p id="akun-pesan" class="text-xs text-gray-600"></p>
+                            <p id="akun-counter" class="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-100"></p>
+                        </div>
+
+                        <!-- Total Denda (diisi JS) -->
+                        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                            <h3 class="font-bold text-gray-800 mb-1">Total Denda Belum Dibayar</h3>
+                            <p id="denda-total" class="text-3xl font-bold text-gray-800">Rp 0</p>
+                            <p id="denda-keterangan" class="text-xs text-gray-500 mt-2"></p>
+                            <p id="denda-tarif" class="text-[11px] text-gray-400 mt-3 pt-3 border-t border-gray-100"></p>
+                        </div>
+                    </div>
+
+                    <!-- Riwayat Denda -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 bg-gray-50">
+                            <h3 class="font-bold text-gray-800 text-sm">Riwayat Tanggungan & Denda</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600">
+                                <thead class="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-3">ID Denda</th>
+                                        <th class="px-6 py-3">Alat</th>
+                                        <th class="px-6 py-3">Keterlambatan</th>
+                                        <th class="px-6 py-3">Nominal</th>
+                                        <th class="px-6 py-3">Status</th>
+                                        <th class="px-6 py-3">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="denda-tabel" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Surat Keterangan Bebas Tanggungan -->
+                    <div class="flex justify-between items-center bg-teal-50 p-4 rounded-xl border border-teal-100">
+                        <div>
+                            <h4 class="text-sm font-bold text-teal-800">Surat Keterangan Bebas Tanggungan Lab</h4>
+                            <p class="text-xs text-teal-600">Dapat diunduh sebagai syarat kelulusan/skripsi setelah semua alat kembali dan denda lunas.</p>
+                        </div>
+                        <button onclick="unduhSuratBebas()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors">
+                            <i class="fas fa-file-download mr-1"></i> Unduh PDF
+                        </button>
+                    </div>
+                </section>
+                
+                <!-- VIEW: ATURAN PEMINJAMAN -->
+                <section id="view-aturan" class="hidden space-y-6 max-w-5xl mx-auto"><div id="aturan-konten" class="space-y-6"></div></section>
+
+                <!-- VIEW: BANTUAN & FAQ -->
+                <section id="view-bantuan" class="hidden space-y-6 max-w-4xl mx-auto">
+                    <div class="bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
+                        <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-4">Bantuan & Frequently Asked Questions (FAQ)</h2>
+                        
+                        <div class="space-y-4">
+                            <details class="group bg-gray-50 p-4 rounded-lg cursor-pointer">
+                                <summary class="font-semibold text-sm text-gray-800 list-none flex justify-between items-center">
+                                    Bagaimana cara meminjam alat?
+                                    <i class="fas fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p class="text-sm text-gray-600 mt-3 pl-2 border-l-2 border-teal-500">Mahasiswa memilih alat dari <strong>Katalog Alat</strong>, menekan <strong>Ajukan Pinjam</strong>, lalu menambahkan alat lain melalui tombol <strong>Tambah alat dari katalog</strong> bila diperlukan. Atur jumlah tiap alat, lengkapi jadwal dan tujuan, kemudian kirim satu pengajuan. Batas jenis alat aktif mengikuti aturan yang berlaku. Setelah dikirim, pantau status di menu <strong>Peminjaman Saya</strong>. Jika disetujui, datang ke ruang Admin pada jadwal yang tertera dan tunjukkan bukti berkode pengambilan.</p>
+                            </details>
+                            <details class="group bg-gray-50 p-4 rounded-lg cursor-pointer">
+                                <summary class="font-semibold text-sm text-gray-800 list-none flex justify-between items-center">
+                                    Bagaimana jika alat rusak saat saya pakai?
+                                    <i class="fas fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p class="text-sm text-gray-600 mt-3 pl-2 border-l-2 border-teal-500">Gunakan menu <strong>Lapor Kendala</strong>, pilih alat yang bermasalah, jelaskan kerusakan, dan unggah foto. Jangan mencoba memperbaiki sendiri. Admin akan menghubungi Anda bila diperlukan.</p>
+                            </details>
+                            <details class="group bg-gray-50 p-4 rounded-lg cursor-pointer">
+                                <summary class="font-semibold text-sm text-gray-800 list-none flex justify-between items-center">
+                                    Berapa denda keterlambatan?
+                                    <i class="fas fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p id="faq-denda" class="text-sm text-gray-600 mt-3 pl-2 border-l-2 border-teal-500"></p>
+                            </details>
+                            <details class="group bg-gray-50 p-4 rounded-lg cursor-pointer">
+                                <summary class="font-semibold text-sm text-gray-800 list-none flex justify-between items-center">
+                                    Bagaimana cara membatalkan pinjaman?
+                                    <i class="fas fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p class="text-sm text-gray-600 mt-3 pl-2 border-l-2 border-teal-500">Buka menu <strong>Peminjaman Saya</strong>. Pengajuan hanya dapat dibatalkan saat masih <strong>Menunggu Persetujuan</strong> atau <strong>Siap Diambil</strong>, sebelum alat diserahkan Admin.</p>
+                            </details>
+                            <details class="group bg-gray-50 p-4 rounded-lg cursor-pointer">
+                                <summary class="font-semibold text-sm text-gray-800 list-none flex justify-between items-center">
+                                    Bagaimana cara mengembalikan alat?
+                                    <i class="fas fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                                </summary>
+                                <p class="text-sm text-gray-600 mt-3 pl-2 border-l-2 border-teal-500">Bawa alat dan bukti peminjaman ke ruang Admin pada jam layanan, lalu tekan <strong>Ajukan Pengembalian</strong> di menu <strong>Peminjaman Saya</strong>. Admin memeriksa kelengkapan dan kondisi alat sebelum transaksi dinyatakan selesai.</p>
+                            </details>
+                        </div>
+                        <div class="border-t border-gray-100 pt-6 flex flex-col items-center justify-center text-center">
+                            <p class="text-sm text-gray-600 mb-3">Masih butuh bantuan? Hubungi admin lab.</p>
+                            <a id="btn-wa-admin" href="#" target="_blank" rel="noopener" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-full font-bold text-sm shadow-md transition-colors"><i class="fab fa-whatsapp"></i> Chat WhatsApp Admin</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: PROFIL -->
+                <section id="view-profil" class="hidden max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
+                    <div class="w-full md:w-1/3 bg-white p-8 rounded-xl border border-gray-100 shadow-sm text-center">
+                        <div class="w-24 h-24 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold text-3xl mx-auto shadow-inner mb-4 relative" id="profile-avatar">
+                            AD
+                        </div>
+                        <h2 id="profile-name" class="text-xl font-bold text-gray-800">Mahasiswa</h2>
+                        <p class="text-xs font-mono text-gray-400 mt-1" id="profile-nim">NPM: 243510595</p>
+                        <p class="text-xs font-semibold text-teal-600 mt-1" id="profile-prodi">Mahasiswa (Peminjam)</p>
+                        <span id="profile-status" class="inline-block mt-4 px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Keanggotaan Aktif</span>
+                    </div>
+
+                    <div class="w-full md:w-2/3 bg-white p-8 rounded-xl border border-gray-100 shadow-sm space-y-6">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-4 border-b pb-2 text-sm">Informasi Kontak</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500">Email Utama</label>
+                                    <p id="profile-email" class="text-sm font-semibold text-gray-800 mt-1">mahasiswa@student.ac.id</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500">No. HP / WhatsApp</label>
+                                    <input type="text" id="profile-hp" placeholder="08xxxxxxxxxx" class="mt-1 w-full border-b border-gray-300 py-1 text-sm outline-none focus:border-teal-600 bg-transparent">
+                                </div>
+                            </div>
+                            <button class="mt-4 px-4 py-2 bg-navy text-white text-xs font-bold rounded hover:bg-gray-800" onclick="saveProfil()">Simpan Info Kontak</button>
+                        </div>
+
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-4 border-b pb-2 text-sm mt-8">Ubah Kata Sandi</h3>
+                            <form onsubmit="handleUbahSandi(event)" class="space-y-3 max-w-sm">
+                                <input type="password" id="pw-lama" placeholder="Kata Sandi Lama" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                <input type="password" id="pw-baru" placeholder="Kata Sandi Baru" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                <input type="password" id="pw-konfirmasi" placeholder="Konfirmasi Sandi Baru" required class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600">
+                                <button type="submit" class="px-4 py-2 bg-teal-600 text-white text-xs font-bold rounded hover:bg-teal-700">Perbarui Sandi</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Detail Laporan Kendala -->
+    <div id="modal-detail-lapor" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 id="dl-judul" class="font-bold text-gray-800 text-lg">Detail Laporan</h3>
+                    <p id="dl-sub" class="font-mono text-xs text-gray-500"></p>
+                </div>
+                <button onclick="tutupDetailLapor()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <div id="dl-isi" class="space-y-4 text-sm"></div>
+        </div>
+    </div>
+
+    <!-- Modal Upload Bukti Peminjaman -->
+     
+    <div id="modal-upload-bukti" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl p-6 max-w-sm w-full">
+            <h3 class="font-bold text-gray-800 text-lg mb-1">Upload Bukti Peminjaman</h3>
+            <p id="upload-trx-id" class="font-mono text-xs text-gray-500 mb-4">TRX-001</p>
+
+            <label for="input-bukti" class="block w-full min-h-[180px] border-2 border-dashed border-gray-300 hover:border-teal-600 rounded-lg cursor-pointer overflow-hidden flex items-center justify-center text-center transition-colors">
+                <div id="upload-placeholder" class="p-6">
+                    <i class="fas fa-camera text-3xl text-gray-400 mb-2"></i>
+                    <p class="text-sm font-semibold text-gray-600">Klik untuk memilih foto</p>
+                    <p class="text-xs text-gray-400 mt-1">JPG / PNG, maksimal 2 MB</p>
+                </div>
+                <img id="preview-bukti" src="" alt="Pratinjau bukti" class="hidden w-full max-h-64 object-contain">
+            </label>
+            <input type="file" id="input-bukti" accept="image/*" class="hidden" onchange="previewBukti(event)">
+
+            <div class="flex gap-3 mt-5">
+                <button onclick="tutupUploadBukti()" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-bold">Batal</button>
+                <button onclick="simpanBukti()" class="flex-1 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-bold">Simpan Bukti</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal Pembayaran Denda -->
+    <div id="modal-bayar-denda" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <h3 class="font-bold text-gray-800 text-lg mb-1">Pembayaran Denda</h3>
+            <p id="bayar-info" class="text-xs text-gray-500 mb-4"></p>
+
+            <div class="bg-rose-50 border border-rose-100 rounded-lg p-4 text-center mb-4">
+                <p class="text-xs font-semibold text-rose-600">Total yang harus dibayar</p>
+                <p id="bayar-nominal" class="text-3xl font-bold text-rose-700">Rp 0</p>
+            </div>
+
+            <label class="block text-xs font-bold text-gray-700 mb-1">Metode Pembayaran</label>
+            <select id="bayar-metode" onchange="updateMetodeBayar()" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-teal-600 mb-3">
+                <option value="QRIS">QRIS</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="Tunai">Tunai di Admin</option>
+            </select>
+
+            <div id="bayar-instruksi" class="text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-lg p-3 mb-3 leading-relaxed"></div>
+
+            <div id="bayar-bukti-wrap" class="mb-4">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Unggah Bukti Pembayaran</label>
+                <input type="file" id="bayar-bukti" accept="image/*" class="w-full border rounded-lg px-3 py-2 text-sm outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="tutupBayarDenda()" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-bold">Batal</button>
+                <button onclick="konfirmasiBayarDenda()" class="flex-1 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-bold">Konfirmasi Pembayaran</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-bukti-pinjam" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4"><h3 class="font-bold text-gray-800 text-lg">Bukti Peminjaman</h3><button onclick="$('modal-bukti-pinjam').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button></div>
+            <div id="bukti-isi" class="text-sm"></div>
+            <div class="flex gap-3 mt-5"><button onclick="$('modal-bukti-pinjam').classList.add('hidden')" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-bold">Tutup</button><button onclick="cetakBukti()" class="flex-1 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-bold"><i class="fas fa-print mr-1"></i> Cetak</button></div>
+        </div>
+    </div>
+    </div>
+
+    <template id="admin-portal">
+        <div id="view-login" class="fixed inset-0 bg-graybg z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl p-8 text-center max-w-md">
+                <h2 class="text-xl font-bold text-gray-800">Sesi admin tidak ditemukan</h2>
+                <p class="text-sm text-gray-500 mt-2">Silakan masuk melalui halaman login bersama.</p>
+                <a href="user.html" class="inline-block mt-5 bg-teal-600 text-white font-bold rounded-lg px-5 py-3 hover:bg-teal-700 transition-colors">Kembali ke Login</a>
+            </div>
+        </div>
+
+        <div id="app-layout" class="flex w-full h-screen overflow-hidden hidden">
+            <aside class="w-64 bg-navy text-gray-300 flex flex-col justify-between p-4 flex-shrink-0 h-screen overflow-y-auto">
+                <div>
+                    <div class="flex items-center gap-3 px-3 py-4 mb-4 border-b border-gray-800">
+                        <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center p-1 border border-gray-700 shrink-0">
+                            <svg class="w-full h-full" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="42" stroke="#22d3ee" stroke-width="3" stroke-dasharray="6 3" opacity=".8"/><g transform="rotate(45 50 50)"><path d="M50 14 L60 50 L50 46 Z" fill="#38bdf8"/><path d="M50 14 L40 50 L50 46 Z" fill="#0284c7"/><path d="M50 86 L60 50 L50 54 Z" fill="#0f172a"/><path d="M50 86 L40 50 L50 54 Z" fill="#334155"/></g><circle cx="50" cy="50" r="4" fill="#fff"/></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-black text-lg tracking-wide text-white leading-none mt-1">KOMPAS<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">LAB</span></span>
+                            <span class="text-[9px] text-gray-400 font-medium tracking-wider uppercase mt-1">Panel Admin</span>
+                        </div>
+                    </div>
+                    <nav id="nav-menu" class="space-y-1"></nav>
+                </div>
+                <div class="pt-4 mt-4 border-t border-gray-800">
+                    <div class="flex items-center gap-3 mb-3 px-2">
+                        <div id="user-avatar" class="w-9 h-9 rounded-full bg-teal-600 flex items-center justify-center font-bold text-white text-sm">AD</div>
+                        <div><p id="user-display-name" class="text-sm font-semibold text-white truncate max-w-[130px]">Admin</p><p class="text-xs text-gray-500">Admin</p></div>
+                    </div>
+                    <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-lg text-xs font-semibold transition-colors"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+                </div>
+            </aside>
+
+            <main class="flex-1 flex flex-col min-w-0 h-screen">
+                <header class="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+                    <h1 id="page-title" class="text-xl font-bold text-gray-800">Dashboard</h1>
+                    <button id="admin-notif-button" onclick="toggleAdminNotifications(event)" class="relative p-2 text-gray-400 hover:text-teal-600 transition-colors" title="Notifikasi dan tindakan admin" aria-label="Buka notifikasi admin" aria-expanded="false" aria-controls="admin-notif-panel">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span id="notif-badge" class="hidden absolute top-0 right-0 min-w-[16px] h-4 px-1 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">0</span>
+                    </button>
+                    <div id="admin-notif-panel" class="hidden absolute right-8 top-full mt-2 w-[min(92vw,26rem)] bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden">
+                        <div id="admin-notif-content"></div>
+                    </div>
+                </header>
+                <div id="content" class="p-8 space-y-6 flex-1 overflow-y-auto relative"></div>
+                <div id="global-toast" class="hidden fixed top-20 right-8 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 z-[60]">
+                    <i id="toast-icon" class="fas fa-check-circle text-green-400"></i><span id="toast-msg" class="text-sm font-medium"></span>
+                </div>
+            </main>
+        </div>
+
+        <div id="modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 id="modal-title" class="font-bold text-gray-800 text-lg"></h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+                </div>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+
+        <input type="file" id="file-import" accept=".csv" class="hidden" onchange="importUsers(event)">
+    </template>
+
+    <script>
+        const adminMode = new URLSearchParams(window.location.search).get('mode') === 'admin';
+        if (adminMode) {
+            document.getElementById('user-portal').remove();
+            const adminTemplate = document.getElementById('admin-portal');
+            document.body.append(adminTemplate.content.cloneNode(true));
+            adminTemplate.remove();
+            document.title = 'KOMPAS Lab - Panel Admin';
+        }
+
+        function loadAppScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = () => reject(new Error(`Gagal memuat ${src}`));
+                document.body.appendChild(script);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                if (adminMode) {
+                    await loadAppScript('Admin.js');
+                    checkSession();
+                    return;
+                }
+                await loadAppScript('core.js');
+                await loadAppScript('user.js');
+                initializeUserApp();
+            } catch (error) {
+                console.error(error);
+                alert('Aplikasi gagal dimuat. Periksa file JavaScript dan coba muat ulang halaman.');
+            }
+        });
+    </script>
+</body>
+</html>

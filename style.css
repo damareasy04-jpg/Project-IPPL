@@ -1,0 +1,61 @@
+/* ===== KOMPAS Lab - gaya bersama (Admin & User) ===== */
+:root {
+    --navy: #131C30;
+    --primary-color: #0D9488;
+    --primary-dark: #0F766E;
+    --bg-color: #F3F4F6;
+    --text-color: #1e293b;
+    --font-family: 'Inter', system-ui, sans-serif;
+}
+
+body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-color); }
+#user-portal { flex: 1 1 0%; width: 100%; min-width: 0; }
+
+/* Navigasi sidebar */
+.nav-btn { display: flex; width: 100%; align-items: center; gap: .75rem; padding: .625rem 1rem; border-radius: .75rem; font-size: .875rem; font-weight: 500; color: #d1d5db; transition: background .15s, color .15s; text-align: left; }
+.nav-btn:hover, .nav-btn.active { background: #1f2937; color: #fff; }
+.nav-btn.active i { color: #2dd4bf; }
+
+/* Komponen umum */
+.card { background: #fff; border: 1px solid #f3f4f6; border-radius: .75rem; box-shadow: 0 1px 2px rgba(0,0,0,.05); padding: 1.25rem; }
+.lbl { display: block; font-size: .75rem; font-weight: 700; color: #374151; margin-bottom: .25rem; }
+.sub { font-size: .75rem; font-weight: 400; color: #9ca3af; }
+.inp { width: 100%; border: 1px solid #d1d5db; border-radius: .5rem; padding: .5rem .75rem; font-size: .875rem; background: #fff; outline: none; }
+.inp:focus { box-shadow: 0 0 0 2px var(--primary-color); border-color: transparent; }
+.inp[readonly] { background: #f9fafb; color: #6b7280; }
+
+/* Tombol */
+.btn { padding: .5rem 1rem; border-radius: .5rem; font-size: .75rem; font-weight: 700; color: #fff; transition: background .15s; box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+.btn-teal { background: #0D9488; } .btn-teal:hover { background: #0F766E; }
+.btn-navy { background: var(--navy); } .btn-navy:hover { background: #1f2937; }
+.btn-rose { background: #f43f5e; } .btn-rose:hover { background: #e11d48; }
+.btn-gray { background: #f3f4f6; color: #374151; box-shadow: none; } .btn-gray:hover { background: #e5e7eb; }
+.ib { width: 1.75rem; height: 1.75rem; border-radius: .375rem; font-size: .7rem; background: #f3f4f6; color: #4b5563; transition: background .15s; }
+.ib:hover { background: #e5e7eb; }
+.ib.ok { background: #dcfce7; color: #15803d; } .ib.warn { background: #fef3c7; color: #b45309; } .ib.bad { background: #ffe4e6; color: #be123c; }
+
+/* Badge status */
+.badge { display: inline-block; padding: .125rem .625rem; border-radius: 9999px; font-size: .75rem; font-weight: 700; }
+.b-green { background: #dcfce7; color: #166534; } .b-yellow { background: #fef9c3; color: #854d0e; }
+.b-red { background: #fee2e2; color: #991b1b; } .b-blue { background: #dbeafe; color: #1e40af; }
+.b-amber { background: #fef3c7; color: #92400e; } .b-gray { background: #f3f4f6; color: #4b5563; }
+
+/* Tabel */
+.tbl { width: 100%; text-align: left; font-size: .875rem; color: #4b5563; }
+.tbl thead { background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #f3f4f6; }
+.tbl th, .tbl td { padding: .75rem 1.25rem; vertical-align: top; }
+.tbl tbody tr { border-bottom: 1px solid #f3f4f6; } .tbl tbody tr:hover { background: #f9fafb; }
+
+.chip { display: inline-flex; align-items: center; gap: .5rem; background: #f0fdfa; color: #0f766e; border: 1px solid #ccfbf1; border-radius: 9999px; padding: .25rem .75rem; font-size: .75rem; font-weight: 600; }
+
+/* Cetak laporan */
+@media print {
+    aside, header, .no-print { display: none !important; }
+    #app-layout, main, #content { display: block !important; height: auto !important; overflow: visible !important; }
+}
+
+/* Tambahan */
+button:disabled { cursor: not-allowed; }
+.ib { display: inline-flex; align-items: center; justify-content: center; }
+.nav-btn { position: relative; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #0D9488; outline-offset: 2px; }
