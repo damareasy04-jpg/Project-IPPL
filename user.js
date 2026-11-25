@@ -58,8 +58,9 @@ function resetPasswordResetForm() {
     passwordResetNim = null;
     $('forgot-account-fields').classList.remove('hidden');
     $('forgot-new-password-fields').classList.add('hidden');
-    $('forgot-nim').required = true;
-    $('forgot-email').required = true;
+    $('forgot-name').required = true;
+    $('forgot-nim').required = false;
+    $('forgot-email').required = false;
     $('forgot-new-password').required = false;
     $('forgot-confirm-password').required = false;
     $('forgot-submit-button').textContent = 'Lanjutkan';
@@ -101,13 +102,25 @@ function handleRegister(e) {
 function handleForgotPassword(e) {
     e.preventDefault();
     if (!passwordResetNim) {
+        const name = $('forgot-name').value.trim().toLowerCase();
         const nim = $('forgot-nim').value.trim();
         const email = $('forgot-email').value.trim().toLowerCase();
-        const u = db.users.find(user => user.nim === nim && String(user.email || '').trim().toLowerCase() === email && user.role !== 'Admin');
-        if (!u) return showAuthAlert('NPM/NIP dan email tidak cocok dengan akun pengguna.', 'error');
+        if (!name) return showAuthAlert('Nama lengkap wajib diisi.', 'error');
+
+        let matches = db.users.filter(user =>
+            user.role !== 'Admin' &&
+            String(user.name || '').trim().toLowerCase() === name
+        );
+        if (nim) matches = matches.filter(user => user.nim === nim);
+        if (email) matches = matches.filter(user => String(user.email || '').trim().toLowerCase() === email);
+
+        if (!matches.length) return showAuthAlert('Nama, NPM/NIP, atau email tidak cocok dengan akun pengguna.', 'error');
+        if (matches.length > 1) return showAuthAlert('Ditemukan lebih dari satu akun dengan nama ini. Isi NPM/NIP atau email untuk membedakannya.', 'error');
+        const u = matches[0];
         passwordResetNim = u.nim;
         $('forgot-account-fields').classList.add('hidden');
         $('forgot-new-password-fields').classList.remove('hidden');
+        $('forgot-name').required = false;
         $('forgot-nim').required = false;
         $('forgot-email').required = false;
         $('forgot-new-password').required = true;

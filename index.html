@@ -154,18 +154,22 @@
                     <div class="mb-6">
                         <button onclick="toggleAuthMode('login')" class="text-gray-400 hover:text-gray-800 mb-4 inline-block"><i class="fas fa-arrow-left"></i> Kembali</button>
                         <h2 class="text-2xl font-bold text-gray-800">Lupa Kata Sandi</h2>
-                        <p class="text-sm text-gray-500 mt-1">Cocokkan NPM/NIP dengan email terdaftar, lalu buat kata sandi baru. Permintaan reset tetap tercatat di menu Pengguna dan Peran.</p>
-                        <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">Mode demo: kecocokan NPM/NIP dan email bukan verifikasi identitas. Jangan gunakan akun atau kata sandi nyata.</p>
+                        <p class="text-sm text-gray-500 mt-1">Masukkan nama lengkap. Jika nama lebih dari satu akun, tambahkan NPM/NIP atau email untuk memastikan akun yang dipilih. Permintaan reset tetap tercatat di menu Pengguna dan Peran.</p>
+                        <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-3">Mode demo: verifikasi berdasarkan data akun lokal tanpa OTP atau email. Jangan gunakan akun atau kata sandi nyata.</p>
                     </div>
                     <form onsubmit="handleForgotPassword(event)" class="space-y-4">
                         <div id="forgot-account-fields" class="space-y-4">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-1">NPM / NIP</label>
-                                <input type="text" id="forgot-nim" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="NPM/NIP terdaftar">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+                                <input type="text" id="forgot-name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="Nama lengkap terdaftar" required>
                             </div>
                             <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Email Kampus Terdaftar</label>
-                                <input type="email" id="forgot-email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="nama@student.uir.ac.id">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">NPM / NIP <span class="font-normal text-gray-400">(opsional)</span></label>
+                                <input type="text" id="forgot-nim" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="Kosongkan jika lupa">
+                            </div>
+                            <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Email Kampus <span class="font-normal text-gray-400">(opsional)</span></label>
+                                <input type="email" id="forgot-email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-teal-600" placeholder="Kosongkan jika lupa">
                             </div>
                         </div>
                         <div id="forgot-new-password-fields" class="hidden space-y-4">
@@ -453,7 +457,6 @@
 
                 <!-- VIEW: PEMINJAMAN ALAT -->
                 <section id="view-peminjaman" class="hidden bg-white p-4 md:p-8 rounded-xl border border-gray-100 shadow-sm max-w-3xl mx-auto">
-            <h2 class="text-xl font-bold text-gray-800 mb-2">Formulir Pengajuan Peminjaman</h2>
             <p class="text-sm text-gray-500 mb-4">Peminjaman hanya untuk mahasiswa. Pilih satu atau beberapa jenis alat dari katalog, tentukan jumlah tiap alat dan jadwal, lalu kirim satu pengajuan untuk ditinjau Admin. Baca <button type="button" onclick="switchView('aturan')" class="text-teal-600 font-semibold hover:underline">aturan peminjaman</button> sebelum mengajukan.</p>
             <form id="form-peminjaman" onsubmit="handlePeminjamanSubmit(event)" class="space-y-5">
                 <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3">

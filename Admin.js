@@ -256,12 +256,28 @@ let adminNotificationListenersReady = false;
 // ================= AUTH =================
 window.addEventListener('storage', e => {
     if (e.key !== KEY) return;
+    lastSyncedDatabase = e.newValue;
     db = load(KEY, null);
     const active = loadAdminSession();
     const admin = active && db?.users.find(user => user.nim === active.nim && user.role === 'Admin' && user.status === 'Aktif');
     if (!admin) { sessionStorage.removeItem(SES); checkSession(); return; }
     render();
 });
+
+let lastSyncedDatabase = localStorage.getItem(KEY);
+function refreshSharedDatabase() {
+    const stored = localStorage.getItem(KEY);
+    if (stored === lastSyncedDatabase) return;
+    lastSyncedDatabase = stored;
+    db = load(KEY, null);
+    if (!db) return;
+    render();
+}
+window.addEventListener('focus', refreshSharedDatabase);
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refreshSharedDatabase();
+});
+setInterval(refreshSharedDatabase, 2000);
 
 function checkSession() {
     const a = loadAdminSession();
@@ -1021,10 +1037,9 @@ V.dashboard = () => {
 };
 
 // ================= PEMINJAMAN =================
-const LS = ['Semua', 'Menunggu Persetujuan', 'Siap Diambil', 'Dipinjam', 'Terlambat', 'Selesai', 'Ditolak'];
+const LS = ['Semua', 'Menunggu Persetujuan', 'Siap Diambil', 'Dipinjam', 'Terlambat', 'Menunggu Cek', 'Selesai', 'Ditolak', 'Dibatalkan'];
 V.loans = () => {
     syncFlowData();
-    const statuses = [...LS, 'Dibatalkan'];
     const loans = db.loans.filter(loan => ui.lf === 'Semua' || loan.status === ui.lf || (ui.lf === 'Menunggu Cek' && hasPendingReturn(loan)));
     const rows = loans.map(loan => {
         const pendingReturn = hasPendingReturn(loan);
@@ -1048,7 +1063,7 @@ V.loans = () => {
         else if (pendingReturn) actions = ib('fa-box-open', 'Periksa pengembalian', `loanIn('${loan.id}')`, 'ok');
         return `<tr><td class="font-mono text-xs">${loan.id}</td><td><b class="text-gray-800">${esc(loan.nama)}</b><br><span class="sub">${esc(loan.nim)}</span></td><td>${items}${loan.items.some(item => asetOf(item.toolId).harga >= db.policy.ambangTinggi) ? '<br><span class="badge b-amber">Bernilai tinggi</span>' : ''}<br><span class="sub">${esc(loan.tujuan)}</span>${attachmentLink}${loan.buktiFoto ? `<br><a href="${esc(loan.buktiFoto)}" target="_blank" rel="noopener" class="text-xs text-teal-700 underline">Lihat bukti alat</a>` : ''}</td><td>${loan.tglAmbil}<br><span class="sub">s/d ${due}</span></td><td>${badge(status)}${late ? `<br><span class="sub text-rose-600">${late} hari kerja | ${rp(Math.min(late * qty * db.policy.dendaHari, db.policy.dendaMaks))}</span>` : ''}${loan.alasan ? `<br><span class="sub">${esc(loan.alasan)}</span>` : ''}</td><td><div class="flex gap-1">${actions}</div></td></tr>`;
     }).join('');
-    return `${tabs('lf', ['Semua', ...statuses], ui.lf)}${tbl(['ID', 'Peminjam', 'Alat', 'Periode', 'Status', 'Aksi'], rows, 'Tidak ada peminjaman.')}
+    return `${tabs('lf', LS, ui.lf)}${tbl(['ID', 'Peminjam', 'Alat', 'Periode', 'Status', 'Aksi'], rows, 'Tidak ada peminjaman.')}
     <p class="text-[11px] text-gray-400">Alur: Menunggu Persetujuan → Siap Diambil → Dipinjam → (Terlambat) → Menunggu Cek → Selesai.</p>`;
 };
 function newPickupCode() {
